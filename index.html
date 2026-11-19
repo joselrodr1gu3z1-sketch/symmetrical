@@ -66,8 +66,21 @@ let S={pts:0,streak:0,done:{},pre:[],post:[],goal:"",j:{}},cur=0,st=0,sn={},qa=0
 try{Object.assign(S,JSON.parse(localStorage.getItem("ss")||"{}"))}catch(e){}
 const sv=()=>{try{localStorage.setItem("ss",JSON.stringify(S))}catch(e){}},cs=()=>M[cur].steps[st];
 
-const MS=`<svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="32" cy="38" rx="22" ry="24" fill="#f5c542"/><circle cx="23" cy="30" r="9" fill="#fff"/><circle cx="41" cy="30" r="9" fill="#fff"/><circle cx="24" cy="31" r="4" fill="#12302e"/><circle cx="40" cy="31" r="4" fill="#12302e"/><path d="M28 38l4 7 4-7z" fill="#e8742a"/><path d="M14 18l8 6M50 18l-8 6" stroke="#0f766e" stroke-width="5" stroke-linecap="round"/></svg>`,AC=["#0f766e","#6d28d9","#be185d","#b45309"];
-const lv=()=>["Beginner","Explorer","Active Listener","Brave Speaker","Safe Speaker"][Math.min(4,S.pts/100|0)];
+const MS=`<svg id="sunny" viewBox="0 0 64 64" aria-hidden="true" style="overflow:visible">
+  <style>
+    @keyframes talk{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.45)}}
+    @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+    #sunny.speaking{animation:bounce .45s infinite}
+    #sunny.speaking #beak{transform-origin:32px 38px;animation:talk .22s infinite}
+  </style>
+  <ellipse cx="32" cy="38" rx="22" ry="24" fill="#f5c542"/>
+  <path d="M14 38 Q8 44 14 50" stroke="#e06d53" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M50 38 Q56 44 50 50" stroke="#e06d53" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <circle cx="23" cy="30" r="9" fill="#fff"/><circle cx="41" cy="30" r="9" fill="#fff"/>
+  <circle cx="24" cy="31" r="4" fill="#12302e"/><circle cx="40" cy="31" r="4" fill="#12302e"/>
+  <path id="beak" d="M28 38l4 7 4-7z" fill="#e8742a"/>
+  <path d="M14 18l8 6M50 18l-8 6" stroke="#0f766e" stroke-width="5" stroke-linecap="round"/>
+</svg>`,AC=["#0f766e","#6d28d9","#be185d","#b45309"];const lv=()=>["Beginner","Explorer","Active Listener","Brave Speaker","Safe Speaker"][Math.min(4,S.pts/100|0)];
 const hud=()=>`<div class=hud><span class=pts id=pts>⭐ ${S.pts} · ${lv()}</span><span class=pts id=stk>🔥 Streak: ${S.streak||0}</span><span class=sm>🏅 ${Object.keys(S.done).length}/4</span></div>`;
 const mas=m=>`<div class=mas>${MS}<div class=bub id=bub>${m}</div></div>`,say2=m=>{let b=$("#bub");if(b)b.textContent=m};
 
@@ -205,13 +218,80 @@ const M=[
 ]}
 ];
 
+function guideTour(lang){
+  try{speechSynthesis.cancel()}catch(e){}
+  const lines = lang==="es" ? [
+    "¡Hola! Soy Sunny, tu guía en Speak Safe. Aquí vas a practicar inglés sin miedo a equivocarte.",
+    "En el Módulo 1 aprenderás conectores para organizar tus ideas paso a paso.",
+    "En el Módulo 2 entrenarás tu oído con audios reales de Valledupar y practicarás tu voz.",
+    "En el Módulo 3 trabajarás en grupos seguros con reglas de respeto y tarjetas de conversación.",
+    "Y en el Módulo 4 llevarás tu diario de aprendizaje para ver todo tu progreso. ¡Elige un módulo y comencemos!"
+  ] : [
+    "Hi! I am Sunny, your guide in Speak Safe. Here you can practice English without fear of making mistakes.",
+    "In Module 1, you will learn connectors to organize your ideas step by step.",
+    "In Module 2, you will train your ear with listening activities and practice speaking with your microphone.",
+    "In Module 3, you will join Safe Speaking Pods with supportive rules and conversation cards.",
+    "And in Module 4, you will track your progress in your personal journal. Choose a module to begin!"
+  ];
+  let idx=0, ow=$("#sunny");
+  function nextLine(){
+    if(idx>=lines.length){ow?.classList.remove("speaking");return}
+    say2(lines[idx]);
+    let u=new SpeechSynthesisUtterance(lines[idx]);
+    u.lang=lang==="es"?"es-CO":"en-US";
+    u.rate=0.92;
+    u.onstart=()=>ow?.classList.add("speaking");
+    u.onend=()=>{idx++;nextLine()};
+    u.onerror=()=>ow?.classList.remove("speaking");
+    speechSynthesis.speak(u);
+  }
+  nextLine();
+}
+
+function guideTour(lang){
+  try{speechSynthesis.cancel()}catch(e){}
+  const lines = lang==="es" ? [
+    "¡Hola! Soy Sunny, tu guía en Speak Safe. Aquí vas a practicar inglés sin miedo a equivocarte.",
+    "En el Módulo 1 aprenderás conectores para organizar tus ideas paso a paso.",
+    "En el Módulo 2 entrenarás tu oído con audios reales de Valledupar y practicarás tu voz.",
+    "En el Módulo 3 trabajarás en grupos seguros con reglas de respeto y tarjetas de conversación.",
+    "Y en el Módulo 4 llevarás tu diario de aprendizaje para ver todo tu progreso. ¡Elige un módulo y comencemos!"
+  ] : [
+    "Hi! I am Sunny, your guide in Speak Safe. Here you can practice English without fear of making mistakes.",
+    "In Module 1, you will learn connectors to organize your ideas step by step.",
+    "In Module 2, you will train your ear with listening activities and practice speaking with your microphone.",
+    "In Module 3, you will join Safe Speaking Pods with supportive rules and conversation cards.",
+    "And in Module 4, you will track your progress in your personal journal. Choose a module to begin!"
+  ];
+  let idx=0, ow=$("#sunny");
+  function nextLine(){
+    if(idx>=lines.length){ow?.classList.remove("speaking");return}
+    say2(lines[idx]);
+    let u=new SpeechSynthesisUtterance(lines[idx]);
+    u.lang=lang==="es"?"es-CO":"en-US";
+    u.rate=0.92;
+    u.onstart=()=>ow?.classList.add("speaking");
+    u.onend=()=>{idx++;nextLine()};
+    u.onerror=()=>ow?.classList.remove("speaking");
+    speechSynthesis.speak(u);
+  }
+  nextLine();
+}
+
 function home(){
   cur=0;let d=Object.keys(S.done).length;try{speechSynthesis.cancel()}catch(e){}
   $("#app").innerHTML=`
     <h1>Speak Safe</h1>
     <p class=sub>A safe interactive lab to listen and speak in English</p>
     ${hud()}
-    ${mas("Hi! I’m Sunny the owl. Explore visual scenes, build sentences, test your voice and become a Safe Speaker! 🦉")}
+    <div class=box style="border-color:var(--pri);background:var(--card)">
+      ${mas("Hi! I’m Sunny the owl. Tap the button below so I can guide you through Speak Safe! 🦉")}
+      <div class=audio-bar style="margin-top:8px">
+        <button onclick="guideTour('en')">🔊 Hear Sunny (English)</button>
+        <button class=ghost onclick="guideTour('es')">🇪🇸 Escuchar guía (Español)</button>
+        <button class=ghost onclick="speechSynthesis.cancel();$('#sunny')?.classList.remove('speaking')">■ Stop</button>
+      </div>
+    </div>
     <div class=pb><i style="width:${d*25}%"></i></div>
     <p class=sm>${d}/4 modules completed ${M.map((m,i)=>S.done[i]?"🏅 "+m.b:"").join(" ")}</p>
     ${M.map((m,i)=>`<button class="card big" onclick=go(${i})><span style="font-size:1.6rem">${m.ic}</span><div><b>Module ${i+1}: ${m.t}</b><br><small class=sm>Badge: ${m.b}</small></div>${S.done[i]?"<em>✓ Done</em>":""}</button>`).join("")}
