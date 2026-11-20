@@ -4,53 +4,71 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Speak Safe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@500;700;800&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f4faf9;--fg:#12302e;--card:#fff;--pri:#0f766e;--pri-soft:#ccfbf1;--on:#fff;--ln:#cfe0dd;--ok:#166534;--ok-bg:#dcfce7;--bad:#b91c1c;--bad-bg:#fee2e2;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1c1b;--fg:#e8f3f1;--card:#142827;--pri:#2dd4bf;--pri-soft:#134e4a;--on:#06201d;--ln:#2a4543;--ok:#86efac;--ok-bg:#064e3b;--bad:#fca5a5;--bad-bg:#7f1d1d}}
-:root[data-theme="dark"]{--bg:#0d1c1b;--fg:#e8f3f1;--card:#142827;--pri:#2dd4bf;--pri-soft:#134e4a;--on:#06201d;--ln:#2a4543;--ok:#86efac;--ok-bg:#064e3b;--bad:#fca5a5;--bad-bg:#7f1d1d}
+:root{--bg:#f0fdfa;--bg-grad:linear-gradient(180deg,#f0fdfa 0%,#fff7ed 100%);--fg:#12302e;--card:#ffffff;--pri:#0f766e;--pri-dark:#115e59;--pri-soft:#ccfbf1;--acc:#e06d53;--on:#ffffff;--ln:#cbd5e1;--ok:#166534;--ok-bg:#dcfce7;--bad:#b91c1c;--bad-bg:#fee2e2;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1716;--bg-grad:linear-gradient(180deg,#0b1716 0%,#132423 100%);--fg:#e8f3f1;--card:#142827;--pri:#2dd4bf;--pri-dark:#14b8a6;--pri-soft:#134e4a;--acc:#fb923c;--on:#06201d;--ln:#2a4543;--ok:#86efac;--ok-bg:#064e3b;--bad:#fca5a5;--bad-bg:#7f1d1d}}
+:root[data-theme="dark"]{--bg:#0b1716;--bg-grad:linear-gradient(180deg,#0b1716 0%,#132423 100%);--fg:#e8f3f1;--card:#142827;--pri:#2dd4bf;--pri-dark:#14b8a6;--pri-soft:#134e4a;--acc:#fb923c;--on:#06201d;--ln:#2a4543;--ok:#86efac;--ok-bg:#064e3b;--bad:#fca5a5;--bad-bg:#7f1d1d}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.5 "Trebuchet MS",Verdana,sans-serif}
-#app{max-width:740px;margin:auto;padding:16px 16px 40px}
-h1{font-size:2.3rem;margin:.2em 0 0;letter-spacing:-.5px}h2{font-size:1.3rem;margin:.6em 0 0}h3{font-size:1.2rem;margin:.4em 0}
-button{font:inherit;border:0;border-radius:14px;padding:10px 16px;background:var(--pri);color:var(--on);cursor:pointer;transition:transform .12s,box-shadow .15s,background .2s}
-button:active:not(:disabled){transform:scale(.97)}
+body{margin:0;background:var(--bg);background-image:var(--bg-grad);min-height:100vh;color:var(--fg);font:17px/1.55 "Nunito",sans-serif;transition:background .4s ease}
+#app{max-width:740px;margin:auto;padding:18px 16px 48px}
+h1,h2,h3{font-family:"Outfit",sans-serif;letter-spacing:-.4px}
+h1{font-size:2.5rem;margin:.15em 0 0;background:linear-gradient(135deg,var(--pri),var(--acc));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+h2{font-size:1.38rem;margin:.6em 0 0}h3{font-size:1.22rem;margin:.4em 0}
+button{font:700 1rem "Nunito",sans-serif;border:0;border-radius:16px;padding:11px 18px;background:var(--pri);color:var(--on);cursor:pointer;box-shadow:0 4px 0 var(--pri-dark);transition:transform .12s,box-shadow .12s,filter .15s}
+button:hover:not(:disabled){filter:brightness(1.05)}
+button:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 var(--pri-dark)}
 button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
-.ghost{background:transparent;color:var(--pri);border:2px solid var(--pri)}button:disabled{opacity:.45;cursor:default}
-.card,.opt,.n{background:var(--card);color:var(--fg);border:2px solid var(--ln);text-align:left;box-shadow:0 2px 0 var(--ln)}
-.card{display:flex;gap:12px;align-items:center;width:100%;margin:10px 0}.big{padding:16px;font-size:1.08rem}.card em{margin-left:auto;color:var(--ok);font-style:normal;font-weight:700}
+.ghost{background:var(--card);color:var(--pri);border:2px solid var(--pri);box-shadow:0 3px 0 var(--ln)}
+button:disabled{opacity:.45;cursor:default;box-shadow:none}
+.card,.opt,.n{background:var(--card);color:var(--fg);border:2px solid var(--ln);border-bottom-width:4px;text-align:left;box-shadow:0 4px 12px rgba(0,0,0,.04)}
+.card{display:flex;gap:14px;align-items:center;width:100%;margin:10px 0}.card em{margin-left:auto;color:var(--ok);font-style:normal;font-weight:800}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}.grid .card{flex-direction:column;text-align:center;margin:0;padding:14px}
-.pb{height:12px;background:var(--ln);border-radius:9px;overflow:hidden;margin:10px 0}.pb i{display:block;height:100%;background:var(--pri);transition:width .35s ease}
-.nav{display:flex;justify-content:space-between;align-items:center;margin-top:24px;padding-top:12px;border-top:1px solid var(--ln)}
-.box{background:var(--card);border:2px solid var(--ln);border-radius:16px;padding:14px;margin:12px 0;box-shadow:0 3px 10px rgba(0,0,0,.03)}
-.n{padding:6px 14px;margin:2px;border-radius:10px}.on{background:var(--pri)!important;color:var(--on)!important;border-color:var(--pri)!important}
-.opt{display:block;width:100%;margin:7px 0;padding:12px 14px}.opt:hover:not(:disabled){border-color:var(--pri)}
+.pb{height:14px;background:var(--ln);border-radius:99px;overflow:hidden;margin:12px 0;padding:2px}.pb i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--pri),var(--acc));transition:width .4s cubic-bezier(.34,1.56,.64,1)}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:26px;padding-top:14px;border-top:2px dashed var(--ln)}
+.box{background:var(--card);border:2px solid var(--ln);border-bottom-width:4px;border-radius:18px;padding:16px;margin:14px 0;box-shadow:0 6px 16px rgba(15,118,110,.06)}
+.n{padding:7px 15px;margin:3px;border-radius:12px}.on{background:var(--pri)!important;color:var(--on)!important;border-color:var(--pri-dark)!important}
+.opt{display:block;width:100%;margin:8px 0;padding:13px 16px}.opt:hover:not(:disabled){border-color:var(--pri);transform:translateY(-1px)}
 .r{border-color:var(--ok)!important;background:var(--ok-bg)!important;color:var(--fg)!important;animation:pop .35s}
 .w{border-color:var(--bad)!important;background:var(--bad-bg)!important;animation:shake .35s}
-.ok{color:var(--ok);font-weight:700}.bad{color:var(--bad);font-weight:700}.sm,.sub{opacity:.85;font-size:.95rem}.badge{font-size:76px;text-align:center}.c{text-align:center}
-textarea{width:100%;min-height:54px;font:inherit;padding:10px;border-radius:12px;border:2px solid var(--ln);background:var(--card);color:var(--fg)}
-/* Escenas visuales vectoriales */
-.scene-wrap{position:relative;border-radius:16px;overflow:hidden;margin:10px 0 14px;border:2px solid var(--ln);background:var(--pri-soft)}
+.ok{color:var(--ok);font-weight:800}.bad{color:var(--bad);font-weight:800}.sm,.sub{opacity:.85;font-size:.95rem}.badge{font-size:80px;text-align:center;animation:pop .5s}.c{text-align:center}
+textarea{width:100%;min-height:58px;font:inherit;padding:12px;border-radius:14px;border:2px solid var(--ln);background:var(--card);color:var(--fg)}
+/* Ruta de aprendizaje en Zigzag (Learning Path) */
+.path-wrap{position:relative;display:flex;flex-direction:column;gap:18px;padding:14px 0 22px;margin:10px 0}
+.path-wrap::before{content:"";position:absolute;top:36px;bottom:36px;left:50%;width:4px;border-left:4px dashed var(--pri);opacity:.35;transform:translateX(-50%);z-index:0}
+.path-node{position:relative;z-index:1;width:86%;max-width:460px;padding:14px 16px;border-radius:20px;display:flex;align-items:center;gap:14px;transition:transform .2s}
+.path-node:nth-child(odd){align-self:flex-start}
+.path-node:nth-child(even){align-self:flex-end}
+.path-node:hover{transform:translateY(-3px) scale(1.01);border-color:var(--pri)}
+.node-icon{width:54px;height:54px;border-radius:16px;background:var(--pri-soft);display:flex;align-items:center;justify-content:center;font-size:1.7rem;flex-shrink:0;border:2px solid var(--pri)}
+.path-node.done .node-icon{background:var(--ok-bg);border-color:var(--ok)}
+/* Transiciones y Escenas */
+.fade-in{animation:fadeIn .32s ease-out}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.scene-wrap{position:relative;border-radius:18px;overflow:hidden;margin:12px 0 16px;border:2px solid var(--ln);border-bottom-width:4px;background:var(--pri-soft);box-shadow:0 6px 16px rgba(0,0,0,.05)}
 .scene-svg svg{width:100%;height:auto;max-height:240px;display:block}
-.scene-cap{padding:8px 12px;font-size:.9rem;background:var(--card);border-top:1px solid var(--ln);display:flex;align-items:center;gap:8px}
-/* Constructor de frases (Word Bank / Tap-to-build) */
-.tray{min-height:64px;border:2px dashed var(--pri);border-radius:14px;padding:10px;background:var(--pri-soft);display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.scene-cap{padding:9px 14px;font-size:.92rem;font-weight:700;background:var(--card);border-top:1px solid var(--ln);display:flex;align-items:center;gap:8px}
+/* Constructor de frases */
+.tray{min-height:66px;border:2px dashed var(--pri);border-radius:16px;padding:12px;background:var(--pri-soft);display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
 .pool{display:flex;flex-wrap:wrap;gap:8px;padding:8px 0}
-.chip{background:var(--card);color:var(--fg);border:2px solid var(--ln);border-bottom-width:4px;border-radius:12px;padding:8px 13px;font-size:.98rem;text-align:left}
+.chip{background:var(--card);color:var(--fg);border:2px solid var(--ln);border-bottom-width:4px;border-radius:12px;padding:8px 13px;font-size:.98rem;box-shadow:none}
 .chip:hover{border-color:var(--pri);transform:translateY(-2px)}
-.chip.in-tray{background:var(--pri);color:var(--on);border-color:var(--pri)}
+.chip.in-tray{background:var(--pri);color:var(--on);border-color:var(--pri-dark)}
 /* Emparejar columnas */
 .mt{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.mt .opt{min-height:58px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:.96rem}
+.mt .opt{min-height:60px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:.96rem}
 /* Audio y Micrófono */
 .audio-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
-.mic-btn{background:#e11d48;color:#fff;display:inline-flex;align-items:center;gap:6px}
+.mic-btn{background:#e11d48;box-shadow:0 4px 0 #9f1239;color:#fff;display:inline-flex;align-items:center;gap:6px}
 .mic-btn.rec{animation:pulse 1s infinite;background:#be123c}
-.hint-box{background:var(--pri-soft);border-left:4px solid var(--pri);padding:8px 12px;border-radius:8px;margin-top:8px;font-size:.94rem}
+.hint-box{background:var(--pri-soft);border-left:4px solid var(--pri);padding:10px 14px;border-radius:10px;margin-top:8px;font-size:.94rem}
 /* HUD y Mascota */
-.hud{display:flex;justify-content:space-between;align-items:center;margin:8px 0;gap:8px;flex-wrap:wrap}
-.pts{background:var(--card);border:2px solid var(--ln);border-radius:20px;padding:4px 14px;font-weight:700}
-.mas{display:flex;gap:12px;align-items:center;margin:10px 0}.mas svg{width:58px;flex:none}
-.bub{background:var(--card);border:2px solid var(--ln);border-radius:16px;padding:10px 14px;position:relative;flex:1}
+.hud{display:flex;justify-content:space-between;align-items:center;margin:10px 0;gap:8px;flex-wrap:wrap}
+.pts{background:var(--card);border:2px solid var(--ln);border-bottom-width:3px;border-radius:99px;padding:5px 15px;font-weight:800}
+.mas{display:flex;gap:14px;align-items:center;margin:12px 0}.mas svg{width:64px;flex:none}
+.bub{background:var(--card);border:2px solid var(--ln);border-bottom-width:4px;border-radius:18px;padding:12px 16px;position:relative;flex:1;font-weight:700}
 .cf{position:fixed;top:-30px;font-size:26px;animation:fall 2.4s linear forwards;pointer-events:none;z-index:9}
 @keyframes pop{0%{transform:scale(.85)}60%{transform:scale(1.06)}100%{transform:scale(1)}}
 @keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
@@ -69,20 +87,28 @@ const sv=()=>{try{localStorage.setItem("ss",JSON.stringify(S))}catch(e){}},cs=()
 const MS=`<svg id="sunny" viewBox="0 0 64 64" aria-hidden="true" style="overflow:visible">
   <style>
     @keyframes talk{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.45)}}
-    @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+    @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+    @keyframes wing{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-8deg)}}
     #sunny.speaking{animation:bounce .45s infinite}
     #sunny.speaking #beak{transform-origin:32px 38px;animation:talk .22s infinite}
+    #sunny.speaking #wing-l{transform-origin:14px 38px;animation:wing .3s infinite}
+    #sunny .eyes-happy,#sunny .eyes-think{display:none}
+    #sunny.happy .eyes-norm{display:none}#sunny.happy .eyes-happy{display:inline}
+    #sunny.think .eyes-norm{display:none}#sunny.think .eyes-think{display:inline}
   </style>
   <ellipse cx="32" cy="38" rx="22" ry="24" fill="#f5c542"/>
-  <path d="M14 38 Q8 44 14 50" stroke="#e06d53" stroke-width="5" fill="none" stroke-linecap="round"/>
-  <path d="M50 38 Q56 44 50 50" stroke="#e06d53" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path id="wing-l" d="M14 38 Q7 44 14 50" stroke="#e06d53" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M50 38 Q57 44 50 50" stroke="#e06d53" stroke-width="5" fill="none" stroke-linecap="round"/>
   <circle cx="23" cy="30" r="9" fill="#fff"/><circle cx="41" cy="30" r="9" fill="#fff"/>
-  <circle cx="24" cy="31" r="4" fill="#12302e"/><circle cx="40" cy="31" r="4" fill="#12302e"/>
+  <g class="eyes-norm"><circle cx="24" cy="31" r="4" fill="#12302e"/><circle cx="40" cy="31" r="4" fill="#12302e"/><circle cx="25" cy="29.5" r="1.4" fill="#fff"/><circle cx="41" cy="29.5" r="1.4" fill="#fff"/></g>
+  <g class="eyes-happy"><path d="M19 31 Q23 25 27 31" stroke="#0f766e" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M37 31 Q41 25 45 31" stroke="#0f766e" stroke-width="3" fill="none" stroke-linecap="round"/></g>
+  <g class="eyes-think"><circle cx="24" cy="28" r="3.5" fill="#e06d53"/><circle cx="40" cy="28" r="3.5" fill="#e06d53"/></g>
   <path id="beak" d="M28 38l4 7 4-7z" fill="#e8742a"/>
   <path d="M14 18l8 6M50 18l-8 6" stroke="#0f766e" stroke-width="5" stroke-linecap="round"/>
-</svg>`,AC=["#0f766e","#6d28d9","#be185d","#b45309"];const lv=()=>["Beginner","Explorer","Active Listener","Brave Speaker","Safe Speaker"][Math.min(4,S.pts/100|0)];
-const hud=()=>`<div class=hud><span class=pts id=pts>⭐ ${S.pts} · ${lv()}</span><span class=pts id=stk>🔥 Streak: ${S.streak||0}</span><span class=sm>🏅 ${Object.keys(S.done).length}/4</span></div>`;
-const mas=m=>`<div class=mas>${MS}<div class=bub id=bub>${m}</div></div>`,say2=m=>{let b=$("#bub");if(b)b.textContent=m};
+</svg>`,AC=["#0f766e","#6d28d9","#be185d","#b45309"];
+const lv=()=>["Beginner","Explorer","Active Listener","Brave Speaker","Safe Speaker"][Math.min(4,S.pts/100|0)];
+const hud=()=>`<div class=hud><span class=pts id=pts>⭐ ${S.pts} · ${lv()}</span><span class=pts id=stk>🔥 Streak: ${S.streak||0}</span><span class=pts>🏅 ${Object.keys(S.done).length}/4</span></div>`;
+const mas=m=>`<div class=mas>${MS}<div class=bub id=bub>${m}</div></div>`,say2=(m,mood="")=>{let b=$("#bub"),ow=$("#sunny");if(b)b.textContent=m;if(ow){ow.classList.remove("happy","think");if(mood)ow.classList.add(mood)}};
 
 const SVG_BANK={
   "img/mod1.png":`<svg viewBox="0 0 400 225" xmlns="http://www.w3.org/2000/svg"><rect width="400" height="225" fill="#f0fdfa"/><circle cx="75" cy="45" r="38" fill="#ccfbf1"/><circle cx="335" cy="180" r="45" fill="#ffedd5"/><path d="M90 155 Q200 65 310 155" stroke="#0f766e" stroke-width="7" fill="none" stroke-dasharray="12,8"/><rect x="65" y="130" width="44" height="44" rx="10" fill="#e06d53"/><rect x="291" y="130" width="44" height="44" rx="10" fill="#0f766e"/><circle cx="200" cy="112" r="50" fill="#fff" stroke="#0f766e" stroke-width="7"/><polygon points="200,74 214,112 200,150 186,112" fill="#e06d53"/><polygon points="200,74 214,112 186,112" fill="#0f766e"/><circle cx="200" cy="112" r="7" fill="#fff"/></svg>`,
@@ -118,7 +144,7 @@ function cf(){for(let i=0;i<24;i++){let e=document.createElement("div");e.classN
 function bp(f){try{let c=new(window.AudioContext||webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.frequency.value=f;g.gain.value=.08;o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.15)}catch(e){}}
 
 function ml(i){document.querySelectorAll("#st .mt>div:first-child .opt").forEach((b,k)=>b.classList.toggle("on",k==i&&!b.disabled));mt.l=i}
-function mr(k){let s=cs(),b=$("#mr"+k);if(mt.l==null||b.disabled)return;let a=$("#ml"+mt.l);a.classList.remove("on");if(s.p[mt.l][1]==mt.r[k]){a.disabled=b.disabled=1;a.classList.add("r");b.classList.add("r");add(5);setStreak(1);bp(660);say2("Nice match! +5 ⭐");if(++mt.d==s.p.length){cf();say2("You matched them all! 🎉")}}else{b.classList.add("w");setStreak(0);bp(220);setTimeout(()=>b.classList.remove("w"),500)}mt.l=null}
+function mr(k){let s=cs(),b=$("#mr"+k);if(mt.l==null||b.disabled)return;let a=$("#ml"+mt.l);a.classList.remove("on");if(s.p[mt.l][1]==mt.r[k]){a.disabled=b.disabled=1;a.classList.add("r");b.classList.add("r");add(5);setStreak(1);bp(660);say2("Nice match! +5 ⭐","happy");if(++mt.d==s.p.length){cf();say2("You matched them all! 🎉","happy")}}else{b.classList.add("w");setStreak(0);bp(220);say2("Not that one, try again!","think");setTimeout(()=>b.classList.remove("w"),500)}mt.l=null}
 
 const ST=["I feel nervous when I have to speak English in class.","I am afraid of making mistakes when I speak.","I use a translator when I don’t understand something.","I understand short English audios without Spanish subtitles.","I practice English outside class.","I feel confident organizing my ideas with connectors."],
 C=["but","however","although","on the other hand"];
@@ -225,18 +251,18 @@ function guideTour(lang){
     "En el Módulo 1 aprenderás conectores para organizar tus ideas paso a paso.",
     "En el Módulo 2 entrenarás tu oído con audios reales de Valledupar y practicarás tu voz.",
     "En el Módulo 3 trabajarás en grupos seguros con reglas de respeto y tarjetas de conversación.",
-    "Y en el Módulo 4 llevarás tu diario de aprendizaje para ver todo tu progreso. ¡Elige un módulo y comencemos!"
+    "Y en el Módulo 4 llevarás tu diario de aprendizaje para ver todo tu progreso. ¡Elige una estación y comencemos!"
   ] : [
     "Hi! I am Sunny, your guide in Speak Safe. Here you can practice English without fear of making mistakes.",
     "In Module 1, you will learn connectors to organize your ideas step by step.",
     "In Module 2, you will train your ear with listening activities and practice speaking with your microphone.",
     "In Module 3, you will join Safe Speaking Pods with supportive rules and conversation cards.",
-    "And in Module 4, you will track your progress in your personal journal. Choose a module to begin!"
+    "And in Module 4, you will track your progress in your personal journal. Choose a station to begin!"
   ];
   let idx=0, ow=$("#sunny");
   function nextLine(){
     if(idx>=lines.length){ow?.classList.remove("speaking");return}
-    say2(lines[idx]);
+    say2(lines[idx],"happy");
     let u=new SpeechSynthesisUtterance(lines[idx]);
     u.lang=lang==="es"?"es-CO":"en-US";
     u.rate=0.92;
@@ -248,73 +274,61 @@ function guideTour(lang){
   nextLine();
 }
 
-function guideTour(lang){
-  try{speechSynthesis.cancel()}catch(e){}
-  const lines = lang==="es" ? [
-    "¡Hola! Soy Sunny, tu guía en Speak Safe. Aquí vas a practicar inglés sin miedo a equivocarte.",
-    "En el Módulo 1 aprenderás conectores para organizar tus ideas paso a paso.",
-    "En el Módulo 2 entrenarás tu oído con audios reales de Valledupar y practicarás tu voz.",
-    "En el Módulo 3 trabajarás en grupos seguros con reglas de respeto y tarjetas de conversación.",
-    "Y en el Módulo 4 llevarás tu diario de aprendizaje para ver todo tu progreso. ¡Elige un módulo y comencemos!"
-  ] : [
-    "Hi! I am Sunny, your guide in Speak Safe. Here you can practice English without fear of making mistakes.",
-    "In Module 1, you will learn connectors to organize your ideas step by step.",
-    "In Module 2, you will train your ear with listening activities and practice speaking with your microphone.",
-    "In Module 3, you will join Safe Speaking Pods with supportive rules and conversation cards.",
-    "And in Module 4, you will track your progress in your personal journal. Choose a module to begin!"
-  ];
-  let idx=0, ow=$("#sunny");
-  function nextLine(){
-    if(idx>=lines.length){ow?.classList.remove("speaking");return}
-    say2(lines[idx]);
-    let u=new SpeechSynthesisUtterance(lines[idx]);
-    u.lang=lang==="es"?"es-CO":"en-US";
-    u.rate=0.92;
-    u.onstart=()=>ow?.classList.add("speaking");
-    u.onend=()=>{idx++;nextLine()};
-    u.onerror=()=>ow?.classList.remove("speaking");
-    speechSynthesis.speak(u);
-  }
-  nextLine();
-}
+const MOD_BG=[
+  "linear-gradient(180deg,#f0fdfa 0%,#ccfbf1 100%)",
+  "linear-gradient(180deg,#fff7ed 0%,#fef3c7 100%)",
+  "linear-gradient(180deg,#f0fdfa 0%,#e0f2fe 100%)",
+  "linear-gradient(180deg,#fdf4ff 0%,#fff7ed 100%)"
+];
 
 function home(){
   cur=0;let d=Object.keys(S.done).length;try{speechSynthesis.cancel()}catch(e){}
+  document.body.style.backgroundImage="";
   $("#app").innerHTML=`
-    <h1>Speak Safe</h1>
-    <p class=sub>A safe interactive lab to listen and speak in English</p>
-    ${hud()}
-    <div class=box style="border-color:var(--pri);background:var(--card)">
-      ${mas("Hi! I’m Sunny the owl. Tap the button below so I can guide you through Speak Safe! 🦉")}
-      <div class=audio-bar style="margin-top:8px">
-        <button onclick="guideTour('en')">🔊 Hear Sunny (English)</button>
-        <button class=ghost onclick="guideTour('es')">🇪🇸 Escuchar guía (Español)</button>
-        <button class=ghost onclick="speechSynthesis.cancel();$('#sunny')?.classList.remove('speaking')">■ Stop</button>
+    <div class=fade-in>
+      <h1>Speak Safe</h1>
+      <p class=sub>A safe interactive lab to listen and speak in English</p>
+      ${hud()}
+      <div class=box style="border-color:var(--pri)">
+        ${mas("Hi! I’m Sunny the owl. Tap the button below so I can guide you through Speak Safe! 🦉")}
+        <div class=audio-bar style="margin-top:8px">
+          <button onclick="guideTour('en')">🔊 Hear Sunny (English)</button>
+          <button class=ghost onclick="guideTour('es')">🇪🇸 Escuchar guía (Español)</button>
+          <button class=ghost onclick="speechSynthesis.cancel();$('#sunny')?.classList.remove('speaking')">■ Stop</button>
+        </div>
       </div>
-    </div>
-    <div class=pb><i style="width:${d*25}%"></i></div>
-    <p class=sm>${d}/4 modules completed ${M.map((m,i)=>S.done[i]?"🏅 "+m.b:"").join(" ")}</p>
-    ${M.map((m,i)=>`<button class="card big" onclick=go(${i})><span style="font-size:1.6rem">${m.ic}</span><div><b>Module ${i+1}: ${m.t}</b><br><small class=sm>Badge: ${m.b}</small></div>${S.done[i]?"<em>✓ Done</em>":""}</button>`).join("")}
-    <p class=sm>Choose a module and go at your own pace.</p>
-    ${d==4?"<p class=ok>You are a Safe Speaker! 🎉</p>":""}`;
+      <div class=pb><i style="width:${d*25}%"></i></div>
+      <p class=sm><b>Learning Path:</b> ${d}/4 modules completed ${M.map((m,i)=>S.done[i]?"🏅 "+m.b:"").join(" ")}</p>
+      <div class=path-wrap>
+        ${M.map((m,i)=>`<button class="card path-node ${S.done[i]?"done":""}" onclick=go(${i})>
+          <div class=node-icon>${S.done[i]?"✅":m.ic}</div>
+          <div><small class=sm style="text-transform:uppercase;font-weight:800;color:var(--pri)">Station ${i+1}</small><br><b>${m.t}</b><br><small class=sm>Badge: ${m.b}</small></div>
+          ${S.done[i]?"<em>✓</em>":""}
+        </button>`).join("")}
+      </div>
+      ${d==4?"<p class='ok c'>You are a Safe Speaker! 🎉</p>":""}
+    </div>`;
 }
 
 const go=i=>{cur=i;st=0;draw()},mv=d=>{st+=d;draw();scrollTo(0,0)};
 
 function draw(){
   let m=M[cur],n=m.steps.length,s=cs();sn={};ck.d=0;try{speechSynthesis.cancel()}catch(e){}
+  if(!matchMedia("(prefers-color-scheme:dark)").matches) document.body.style.backgroundImage=MOD_BG[cur];
   $("#app").innerHTML=`
-    <button class=ghost onclick=home()>← Back to menu</button>
-    <h2>Module ${cur+1}: ${m.t}</h2>
-    ${art(cur)}
-    ${hud()}
-    <div class=pb><i style="width:${(st+1)/n*100}%"></i></div>
-    ${mas("Let’s go! Take your time and enjoy the activity. 💪")}
-    <div id=st>${R[s.y](s)}</div>
-    <div class=nav>
-      <button class=ghost onclick=mv(-1) ${st?"":"disabled"}>Back</button>
-      <span class=sm>Step ${st+1} of ${n}</span>
-      <button onclick=mv(1) ${st<n-1?"":"disabled"}>Next</button>
+    <div class=fade-in>
+      <button class=ghost onclick=home()>← Back to path</button>
+      <h2>Module ${cur+1}: ${m.t}</h2>
+      ${art(cur)}
+      ${hud()}
+      <div class=pb><i style="width:${(st+1)/n*100}%"></i></div>
+      ${mas("Let’s go! Take your time and enjoy the activity. 💪")}
+      <div id=st>${R[s.y](s)}</div>
+      <div class=nav>
+        <button class=ghost onclick=mv(-1) ${st?"":"disabled"}>Back</button>
+        <span class=sm>Step ${st+1} of ${n}</span>
+        <button onclick=mv(1) ${st<n-1?"":"disabled"}>Next</button>
+      </div>
     </div>`;
   ({order:ordR,journal:jv})[s.y]?.();
 }
@@ -324,7 +338,7 @@ const qh=s=>s.q.map((q,i)=>`
     <p><b>${i+1}.</b> ${q[0]}</p>
     ${q[1].map((x,j)=>`<button class=opt onclick=an(${i},${j})>${x}</button>`).join("")}
     <div style="margin-top:8px;display:flex;gap:8px;align-items:center">
-      ${q[4]?`<button class="ghost" style="padding:5px 10px;font-size:.88rem" onclick="$('#h${i}').hidden=!$('#h${i}').hidden">💡 Need a hint?</button>`:""}
+      ${q[4]?`<button class="ghost" style="padding:5px 10px;font-size:.88rem" onclick="$('#h${i}').hidden=!$('#h${i}').hidden;say2('Read the hint carefully! 💡','think')">💡 Need a hint?</button>`:""}
     </div>
     ${q[4]?`<div id=h${i} class=hint-box hidden>${q[4]}</div>`:""}
     <p class=fb></p>
@@ -342,7 +356,7 @@ const R={
   pick:s=>`<h3>${s.t}</h3><p>Choose your focus for this course.</p>`+s.o.map((x,j)=>`<button class="opt${S.goal==x?" r":""}" onclick=pk(${j})>${x}</button>`).join("")+`<p class=ok>${S.goal?"Great goal! 💪":""}</p>`,
   check:s=>`<h3>${s.t}</h3><p>${s.x}</p>`+s.o.map(x=>`<label class=box style="display:flex;gap:10px;align-items:center;cursor:pointer"><input type=checkbox style="width:20px;height:20px" onchange=ck()> <span>${x}</span></label>`).join("")+`<p id=cm class=ok></p>`,
   journal:s=>`<h3>${s.t}</h3><p class=sm>Write a little. Your reflections stay private on your device.</p>`+s.q.map((q,i)=>`<p><b>${q}</b><br><textarea id=j${i} oninput=js(${i})></textarea></p>`).join(""),
-  badge:()=>{if(!S.done[cur]){add(50);cf();bp(880)}S.done[cur]=1;sv();let m=M[cur];return `<div class=badge>🏅</div><h3 class=c>${m.b}</h3><p class="ok c">Congratulations! You finished Module ${cur+1}.</p><p class=c>⭐ ${S.pts} points · ${lv()}</p>${cur==3?"<p class=c>You practiced, you listened, you spoke. That is real progress.</p>":""}<p class=c>${cur<3?`<button onclick=go(${cur+1})>Go to Module ${cur+2} →</button> `:""}<button class=ghost onclick=home()>Back to menu</button></p>`}
+  badge:()=>{if(!S.done[cur]){add(50);cf();bp(880)}S.done[cur]=1;sv();let m=M[cur];return `<div class=badge>🏅</div><h3 class=c>${m.b}</h3><p class="ok c">Congratulations! You finished Module ${cur+1}.</p><p class=c>⭐ ${S.pts} points · ${lv()}</p>${cur==3?"<p class=c>You practiced, you listened, you spoke. That is real progress.</p>":""}<p class=c>${cur<3?`<button onclick=go(${cur+1})>Go to Module ${cur+2} →</button> `:""}<button class=ghost onclick=home()>Back to path</button></p>`}
 };
 
 function sc(e,k,i,n){let a=S[k]=S[k]||[];a[i]=n;sv();[...e.parentNode.children].forEach(b=>b.classList.toggle("on",b==e))}
@@ -362,7 +376,7 @@ function ordR(){
     <p id=of></p>`;
 }
 const ot=i=>{o.a.push(o.p.splice(i,1)[0]);bp(440);ordR()},ou=i=>{o.p.push(o.a.splice(i,1)[0]);bp(330);ordR()};
-function oc(){let r=E(o.a,cs().s);if(r&&!o.d){o.d=1;add(20);setStreak(1);cf();bp(660);say2("Perfect sequence! +20 ⭐")}else if(!r){setStreak(0);bp(220)}$("#of").innerHTML=r?"<span class=ok>Great job! ✅ Connectors in order: First, Then, Next, After that, Finally.</span>":"<span class=bad>Not quite yet!</span> Tap a blue block in the tray to move it back and reorder."}
+function oc(){let r=E(o.a,cs().s);if(r&&!o.d){o.d=1;add(20);setStreak(1);cf();bp(660);say2("Perfect sequence! +20 ⭐","happy")}else if(!r){setStreak(0);bp(220);say2("Check the order of the connectors!","think")}$("#of").innerHTML=r?"<span class=ok>Great job! ✅ Connectors in order: First, Then, Next, After that, Finally.</span>":"<span class=bad>Not quite yet!</span> Tap a blue block in the tray to move it back and reorder."}
 
 function an(i,j){
   let s=cs(),q=s.q[i],b=$("#q"+i).querySelectorAll(".opt");
@@ -370,10 +384,10 @@ function an(i,j){
   if(j==q[2]){
     b.forEach((x,k)=>{x.disabled=1;if(k==q[2])x.classList.add("r")});
     $("#q"+i+" .fb").innerHTML=`<span class=ok>✅ Correct!</span> ${q[3]||""}`;
-    qc++;qa++;add(10);setStreak(1);bp(660);say2("Great! +10 ⭐");
+    qc++;qa++;add(10);setStreak(1);bp(660);say2("Great! +10 ⭐","happy");
   }else{
     b[j].disabled=1;b[j].classList.add("w");
-    setStreak(0);bp(220);say2("Almost! Try another option 💪");
+    setStreak(0);bp(220);say2("Almost! Try another option 💪","think");
     $("#q"+i+" .fb").innerHTML=`<span class=bad>Not quite.</span> Try another option or tap <b>💡 Need a hint?</b>`;
     return;
   }
@@ -401,8 +415,8 @@ function rec(j){
       let words=said.toLowerCase().replace(/[^a-z\s]/g,"").split(/\s+/);
       let hits=target.filter(w=>words.includes(w)).length;
       let pct=Math.round((hits/target.length)*100);
-      if(pct>=70){add(10);setStreak(1);bp(660);out.innerHTML=`<span class=ok>✅ Great pronunciation (${pct}% match)!</span> You said: <i>“${said}”</i>`}
-      else{bp(320);out.innerHTML=`<span class=bad>Keep trying (${pct}% match).</span> You said: <i>“${said}”</i> — Listen again and retry!`}
+      if(pct>=70){add(10);setStreak(1);bp(660);say2("Awesome pronunciation! +10 ⭐","happy");out.innerHTML=`<span class=ok>✅ Great pronunciation (${pct}% match)!</span> You said: <i>“${said}”</i>`}
+      else{bp(320);say2("Nice try! Listen and repeat again 💪","think");out.innerHTML=`<span class=bad>Keep trying (${pct}% match).</span> You said: <i>“${said}”</i> — Listen again and retry!`}
     };
     r.onerror=()=>{out.innerHTML="<span class=bad>Could not hear audio. Check microphone permission and try again.</span>"};
     r.onend=()=>{btn.classList.remove("rec");btn.textContent="🎙️ Speak"};
@@ -411,7 +425,7 @@ function rec(j){
 }
 
 function pk(j){S.goal=cs().o[j];sv();draw()}
-function ck(){let k=[...document.querySelectorAll("#st input")].every(i=>i.checked);$("#cm").textContent=k?cs().m:"";if(k&&!ck.d){ck.d=1;add(15);cf();bp(660)}}
+function ck(){let k=[...document.querySelectorAll("#st input")].every(i=>i.checked);$("#cm").textContent=k?cs().m:"";if(k&&!ck.d){ck.d=1;add(15);cf();bp(660);say2("Challenge completed! +15 ⭐","happy")}}
 function jv(){cs().q.forEach((q,i)=>{$("#j"+i).value=S.j[i]||""})}
 function js(i){S.j[i]=$("#j"+i).value;sv()}
 home();
