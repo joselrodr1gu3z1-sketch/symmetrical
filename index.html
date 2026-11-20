@@ -59,10 +59,15 @@ textarea{width:100%;min-height:58px;font:inherit;padding:12px;border-radius:14px
 /* Emparejar columnas */
 .mt{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .mt .opt{min-height:60px;display:flex;align-items:center;justify-content:center;text-align:center;font-size:.96rem}
-/* Audio y Micrófono */
+/* Audio, Onda en tiempo real y Feedback de pronunciación */
 .audio-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
 .mic-btn{background:#e11d48;box-shadow:0 4px 0 #9f1239;color:#fff;display:inline-flex;align-items:center;gap:6px}
 .mic-btn.rec{animation:pulse 1s infinite;background:#be123c}
+.wave-box{display:none;align-items:center;gap:10px;margin-top:8px;padding:8px 12px;border-radius:12px;background:var(--pri-soft);border:1px solid var(--pri)}
+.wave-box.active{display:flex}
+.wave-cv{width:100%;height:38px;display:block}
+.w-ok{color:var(--ok);background:var(--ok-bg);padding:2px 6px;border-radius:6px;font-weight:800;display:inline-block;margin:2px}
+.w-bad{color:var(--bad);background:var(--bad-bg);padding:2px 6px;border-radius:6px;font-weight:800;text-decoration:underline wavy;display:inline-block;margin:2px}
 .hint-box{background:var(--pri-soft);border-left:4px solid var(--pri);padding:10px 14px;border-radius:10px;margin-top:8px;font-size:.94rem}
 /* HUD y Mascota */
 .hud{display:flex;justify-content:space-between;align-items:center;margin:10px 0;gap:8px;flex-wrap:wrap}
@@ -352,7 +357,7 @@ const R={
   quiz:s=>(qa=qc=0,`${sceneBox(s.img,s.cap)}<h3>${s.t}</h3>`+qh(s)),
   listen:s=>(qa=qc=0,`${sceneBox(s.img,s.cap)}<h3>${s.t}</h3><div class=box><div class=audio-bar><button onclick=sp(.9)>▶ Listen</button> <button class=ghost onclick=sp(.65)>🐢 Slow</button> <button class=ghost onclick="speechSynthesis.cancel()">■ Stop</button></div><p>${s.lock?"<small>🔒 The transcript unlocks after you answer all questions.</small> ":""}<button class=ghost id=tb ${s.lock?"hidden":""} onclick="$('#tx').hidden=!$('#tx').hidden">📄 Show/Hide transcript</button></p><p id=tx hidden style="background:var(--pri-soft);padding:10px;border-radius:10px">${s.tx}</p></div>`+qh(s)),
   match:s=>(mt={l:null,d:0,r:s.p.map(p=>p[1]).sort(()=>Math.random()-.5)},`<h3>${s.t}</h3><p>${s.x}</p><div class=mt><div>${s.p.map((p,i)=>`<button class=opt id=ml${i} onclick=ml(${i})>${p[0]}</button>`).join("")}</div><div>${mt.r.map((t,k)=>`<button class=opt id=mr${k} onclick=mr(${k})>${t}</button>`).join("")}</div></div>`),
-  say:s=>`<h3>${s.t}</h3><p>1. Listen to the model 🔊 &nbsp; 2. Tap <b>🎙️ Speak</b> and say the sentence out loud.</p>`+s.s.map((x,j)=>`<div class=box><p style="margin:0 0 8px"><b>${j+1}.</b> ${x}</p><div class=audio-bar><button onclick="sp(.85,cs().s[${j}])">🔊 Listen</button> <button class=mic-btn id=mic${j} onclick="rec(${j})">🎙️ Speak</button></div><p id=sr${j} class=sm style="margin:6px 0 0"></p></div>`).join(""),
+  say:s=>`<h3>${s.t}</h3><p>1. Listen to the model 🔊 &nbsp; 2. Tap <b>🎙️ Speak</b> and say the sentence out loud.</p>`+s.s.map((x,j)=>`<div class=box><p style="margin:0 0 8px"><b>${j+1}.</b> ${x}</p><div class=audio-bar><button onclick="sp(.85,cs().s[${j}])">🔊 Listen</button> <button class=mic-btn id=mic${j} onclick="rec(${j})">🎙️ Speak</button></div><div class=wave-box id=wb${j}><span class=sm style="color:#e11d48;font-weight:800">● REC</span><canvas class=wave-cv id=cv${j} width=300 height=38></canvas></div><div id=sr${j} class=sm style="margin:8px 0 0"></div></div>`).join(""),
   pick:s=>`<h3>${s.t}</h3><p>Choose your focus for this course.</p>`+s.o.map((x,j)=>`<button class="opt${S.goal==x?" r":""}" onclick=pk(${j})>${x}</button>`).join("")+`<p class=ok>${S.goal?"Great goal! 💪":""}</p>`,
   check:s=>`<h3>${s.t}</h3><p>${s.x}</p>`+s.o.map(x=>`<label class=box style="display:flex;gap:10px;align-items:center;cursor:pointer"><input type=checkbox style="width:20px;height:20px" onchange=ck()> <span>${x}</span></label>`).join("")+`<p id=cm class=ok></p>`,
   journal:s=>`<h3>${s.t}</h3><p class=sm>Write a little. Your reflections stay private on your device.</p>`+s.q.map((q,i)=>`<p><b>${q}</b><br><textarea id=j${i} oninput=js(${i})></textarea></p>`).join(""),
@@ -401,6 +406,46 @@ function an(i,j){
 
 function sp(r,t){try{speechSynthesis.cancel();let u=new SpeechSynthesisUtterance(t||cs().tx);u.lang="en-US";u.rate=r;speechSynthesis.speak(u)}catch(e){alert("Audio is not available on this device.")}}
 
+let _aud={ctx:null,stream:null,raf:null};
+function stopWave(j){
+  cancelAnimationFrame(_aud.raf);
+  if(_aud.stream){_aud.stream.getTracks().forEach(t=>t.stop());_aud.stream=null}
+  if(_aud.ctx){_aud.ctx.close().catch(()=>{});_aud.ctx=null}
+  $("#wb"+j)?.classList.remove("active");
+}
+
+async function startWave(j){
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    const src=ctx.createMediaStreamSource(stream);
+    const an=ctx.createAnalyser();
+    an.fftSize=64;
+    src.connect(an);
+    _aud={ctx,stream,raf:null};
+    const wb=$("#wb"+j),cv=$("#cv"+j);
+    if(!wb||!cv)return;
+    wb.classList.add("active");
+    const c=cv.getContext("2d"),data=new Uint8Array(an.frequencyBinCount);
+    const drawWave=()=>{
+      _aud.raf=requestAnimationFrame(drawWave);
+      an.getByteFrequencyData(data);
+      c.clearRect(0,0,cv.width,cv.height);
+      const bars=24,step=Math.floor(data.length/bars),bw=(cv.width/bars)-4;
+      for(let i=0;i<bars;i++){
+        const val=data[i*step]/255;
+        const h=Math.max(4,val*(cv.height-6));
+        const y=(cv.height-h)/2;
+        c.fillStyle=val>0.45?"#e06d53":"#0f766e";
+        c.beginPath();
+        c.roundRect(i*(bw+4),y,bw,h,4);
+        c.fill();
+      }
+    };
+    drawWave();
+  }catch(e){}
+}
+
 function rec(j){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   const out=$("#sr"+j),btn=$("#mic"+j);
@@ -409,19 +454,30 @@ function rec(j){
     let r=new SR();r.lang="en-US";r.interimResults=false;
     btn.classList.add("rec");btn.textContent="🎙️ Listening...";
     out.textContent="Speak clearly now...";
+    startWave(j);
     r.onresult=e=>{
       let said=e.results[0][0].transcript;
-      let target=cs().s[j].toLowerCase().replace(/[^a-z\s]/g,"").split(/\s+/);
-      let words=said.toLowerCase().replace(/[^a-z\s]/g,"").split(/\s+/);
-      let hits=target.filter(w=>words.includes(w)).length;
-      let pct=Math.round((hits/target.length)*100);
-      if(pct>=70){add(10);setStreak(1);bp(660);say2("Awesome pronunciation! +10 ⭐","happy");out.innerHTML=`<span class=ok>✅ Great pronunciation (${pct}% match)!</span> You said: <i>“${said}”</i>`}
-      else{bp(320);say2("Nice try! Listen and repeat again 💪","think");out.innerHTML=`<span class=bad>Keep trying (${pct}% match).</span> You said: <i>“${said}”</i> — Listen again and retry!`}
+      let rawTarget=cs().s[j].split(/\s+/);
+      let cleanWords=said.toLowerCase().replace(/[^a-z\s]/g,"").split(/\s+/);
+      let hits=0;
+      let colored=rawTarget.map(orig=>{
+        let clean=orig.toLowerCase().replace(/[^a-z]/g,"");
+        if(cleanWords.includes(clean)){hits++;return `<span class=w-ok>${orig}</span>`}
+        return `<span class=w-bad>${orig}</span>`;
+      }).join(" ");
+      let pct=Math.round((hits/rawTarget.length)*100);
+      if(pct>=75){
+        add(10);setStreak(1);bp(660);say2("Awesome pronunciation! +10 ⭐","happy");
+        out.innerHTML=`<div style="margin-bottom:6px">${colored}</div><span class=ok>✅ ${pct}% accuracy!</span> <small>(You said: “${said}”)</small>`;
+      }else{
+        setStreak(0);bp(320);say2("Check the red words and try again! 💪","think");
+        out.innerHTML=`<div style="margin-bottom:6px">${colored}</div><span class=bad>⚠️ ${pct}% accuracy.</span> Practice the words in <b style="color:var(--bad)">red</b> and retry! <small>(Heard: “${said}”)</small>`;
+      }
     };
     r.onerror=()=>{out.innerHTML="<span class=bad>Could not hear audio. Check microphone permission and try again.</span>"};
-    r.onend=()=>{btn.classList.remove("rec");btn.textContent="🎙️ Speak"};
+    r.onend=()=>{stopWave(j);btn.classList.remove("rec");btn.textContent="🎙️ Speak"};
     r.start();
-  }catch(e){btn.classList.remove("rec");btn.textContent="🎙️ Speak"}
+  }catch(e){stopWave(j);btn.classList.remove("rec");btn.textContent="🎙️ Speak"}
 }
 
 function pk(j){S.goal=cs().o[j];sv();draw()}
